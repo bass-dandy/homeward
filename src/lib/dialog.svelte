@@ -1,4 +1,14 @@
-<div class="dialog">
+<script lang="ts">
+	let {
+		position = 'center',
+		children,
+	}: {
+		position: 'center' | 'bottom';
+		children: () => any;
+	}= $props();
+</script>
+
+<div class={`dialog ${position}`}>
 	<div class="border-top">
 		<img src="/images/ui/border-top-left.png" width="50" height="9" alt="">
 		<div class="border-stretch"></div>
@@ -11,7 +21,7 @@
 		<img src="/images/ui/border-top-right.png" width="50" height="9" alt="">
 	</div>
 	<div class="content">
-		<slot />
+		{@render children?.()}
 	</div>
 	<div class="border-bottom">
 		<img src="/images/ui/border-bottom-left.png" width="50" height="9" alt="">
@@ -29,15 +39,24 @@
 <style>
 	.dialog {
 		position: fixed;
+	}
+
+	.dialog.center {
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
 	}
 
+	.dialog.bottom {
+		bottom: 32px;
+		left: 50%;
+		transform: translateX(-50%);
+	}
+
 	.content {
 		background-color: black;
 		color: var(--color-text-primary);
-		padding: 16px 48px;
+		padding: 8px 48px;
 		mask-image: linear-gradient(to right, transparent, black 32px, black calc(100% - 32px), transparent);
 		background:
 			linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)),

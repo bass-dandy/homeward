@@ -1,9 +1,9 @@
 <script lang="ts">
-	export let onClick: () => void;
+	export let onclick: () => void;
 </script>
 
 <div class="button-wrapper">
-	<button on:click={onClick}>
+	<button {onclick}>
 		<slot />
 	</button>
 </div>
@@ -46,7 +46,7 @@
 		padding: 0 16px;
 		border: 1px solid var(--color-ui);
 		border-radius: 0;
-		color: var(--color-white);
+		color: var(--color-text-primary);
 		font-family: 'Matisse', serif;
 		text-transform: uppercase;
 	}

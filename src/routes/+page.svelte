@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ProgressMap from '$lib/progress-map.svelte';
+	import InteractiveMap from '$lib/interactive-map.svelte';
 	import Dialog from '$lib/dialog.svelte';
 	import FileInput from '$lib/file-input.svelte';
 	import type { MapData } from '$lib/types';
@@ -8,7 +8,7 @@
 </script>
 
 {#if locationsByName}
-	<ProgressMap {locationsByName} />
+	<InteractiveMap {locationsByName} />
 {:else}
 	<Dialog>
 		<div class="dialog-content">

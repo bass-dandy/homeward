@@ -25,7 +25,7 @@
 			}
 		}}
 	/>
-	<Button onClick={() => fileInput.click()}>
+	<Button onclick={() => fileInput.click()}>
 		Upload spoiler log
 	</Button>
 </div>

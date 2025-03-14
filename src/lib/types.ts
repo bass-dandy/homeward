@@ -5,8 +5,12 @@ export interface MapData {
 		links: {
 			location: string;
 			isPreexisting: boolean;
+			itemRequirement?: {
+				name: string;
+				location: string;
+			};
 			thereGate: string;
-			hereGate: string | undefined;
+			hereGate?: string;
 		}[];
 	};
 }

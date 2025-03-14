@@ -28,6 +28,34 @@ export function getGates(line: string) {
 	);
 }
 
+export function getItemRequirement(line: string) {
+	let name: string | undefined;
+	let location: string | undefined;
+
+	if (line.includes('Preexisting:')) {
+		// item-gated preexisting paths have a consistent format
+		const match = line.match(
+			/(?<=using |embedding |locked by |attempting to use |placing all ).*an item from [^)]*/
+		)?.[0];
+
+		if (match) {
+			[name, location] = match.split(', an item from ');
+		}
+	} else if (line.includes('Random:')) {
+		// item-gated random warps do not have a consistent format, but there are only 3
+		if (line.includes('From Vordt of the Boreal Valley (transport after Vordt)')) {
+			name = 'Small Lothric Banner';
+		} else if (line.includes('From Irithyll Dungeon (warp to Archdragon Peak)')) {
+			name = 'Path of the Dragon';
+		} else if (line.includes('From after Demon Prince (transport after Demon Prince)')) {
+			name = 'Small Envoy Banner';
+		}
+		location = line.match(/(?<=, an item from )[^\)]*/)?.[0];
+	}
+
+	return name && location ? { name, location } : undefined;
+}
+
 export function validateMapData(mapData: MapData) {
 	Object.values(mapData).forEach((location) => {
 		location.links.forEach((link) => {
@@ -58,6 +86,7 @@ export function invertLinks(mapData: MapData) {
 			invertedMapData[link.location].links.push({
 				location: locationName,
 				isPreexisting: link.isPreexisting,
+				itemRequirement: link.itemRequirement,
 				thereGate: link.thereGate,
 				hereGate: link.hereGate
 			});
@@ -105,9 +134,12 @@ export function parseLog(log: string) {
 			// hereGate will be undefined for preexisting routes
 			const [thereGate, hereGate] = getGates(line);
 
+			const itemRequirement = getItemRequirement(line);
+
 			mapData[getLocation(here)].links.push({
 				location: getLocation(there),
 				isPreexisting: line.includes('Preexisting:'),
+				itemRequirement,
 				thereGate,
 				hereGate
 			});

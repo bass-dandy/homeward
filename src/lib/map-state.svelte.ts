@@ -15,6 +15,7 @@ interface GraphEdge {
 	arrows?: string;
 	dashes: boolean;
 	title: string;
+	label: string;
 }
 
 export class MapState {
@@ -63,6 +64,7 @@ export class MapState {
 				color: link.isPreexisting ? 'white' : 'rgb(237, 112, 45)',
 				arrows: link.isPreexisting ? undefined : 'to, from',
 				title: `${link.thereGate}${link.hereGate ? ` | ${link.hereGate}` : ''}`,
+				label: link.itemRequirement ? `🔒 ${link.itemRequirement.name}` : '',
 				dashes: link.isPreexisting
 			});
 		});

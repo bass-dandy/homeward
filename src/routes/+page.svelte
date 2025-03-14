@@ -25,7 +25,7 @@
 {/if}
 
 <style>
-	:global(:root){
+	:global(:root) {
 		--color-text-primary: rgb(188, 188, 188);
 		--color-text-secondary: rgb(155, 135, 102);
 		--color-accent: rgb(100, 85, 53);

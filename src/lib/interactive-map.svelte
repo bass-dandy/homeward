@@ -4,6 +4,7 @@
 	import { Network } from 'vis-network';
 	import Button from './button.svelte';
 	import ForceGraph from './force-graph.svelte';
+	import MapControls from './map-controls.svelte';
 	import { MapState } from './map-state.svelte.ts';
 	import type { MapData } from './types';
 
@@ -32,7 +33,7 @@
 	/>
 </div>
 
-<div class="button">
+<MapControls activeMapState={activeView === 'progress' ? progressMapState : fullMapState}>
 	<Button
 		onclick={() => {
 			activeView = activeView === 'progress' ? 'full' : 'progress';
@@ -40,17 +41,10 @@
 	>
 		{activeView === 'progress' ? 'Show full map' : 'Show progress'}
 	</Button>
-</div>
+</MapControls>
 
 <style>
 	.map:not(.active) {
 		display: none;
-	}
-
-	.button {
-		position: fixed;
-		top: 10px;
-		left: 10px;
-		z-index: 1;
 	}
 </style>

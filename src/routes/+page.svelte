@@ -37,7 +37,7 @@
 		font-family: 'Matisse', serif;
 		margin: 0;
 		padding: 0;
-		background-color: #222;
+		background-color: rgb(25, 20, 15);
 	}
 
 	.dialog-content {

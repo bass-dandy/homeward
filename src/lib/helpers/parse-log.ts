@@ -81,14 +81,15 @@ export function invertLinks(mapData: MapData) {
 	// for link in each location...
 	// 1. move the link to its linked location
 	// 2. change its location to the current location
+	// 3. swap hereGate and thereGate
 	Object.entries(mapData).forEach(([locationName, locationData]) => {
 		locationData.links.forEach((link) => {
 			invertedMapData[link.location].links.push({
 				location: locationName,
 				isPreexisting: link.isPreexisting,
 				itemRequirement: link.itemRequirement,
-				thereGate: link.thereGate,
-				hereGate: link.hereGate
+				thereGate: link.hereGate,
+				hereGate: link.thereGate
 			});
 		});
 	});
@@ -117,33 +118,39 @@ export function parseLog(log: string) {
 
 	const mapData: MapData = {};
 
-	lines.forEach((line) => {
-		if (!line.startsWith('  ')) {
-			// this is a new location
-			mapData[getLocation(line)] = {
-				scaling: getScaling(line),
-				isBoss: getIsBoss(line),
-				links: []
-			};
-		} else {
-			// this is a route to an existing location
-			const [there, here] = removeParens(line)
-				.trim()
-				.split(/ to (.*)/s);
+	// lines that denote new locations
+	const locationLines = lines.filter((line) => !line.startsWith('  '));
 
-			// hereGate will be undefined for preexisting routes
-			const [thereGate, hereGate] = getGates(line);
+	// lines that denote links between locations
+	const linkLines = lines.filter((line) => line.startsWith('  '));
 
-			const itemRequirement = getItemRequirement(line);
+	locationLines.forEach((line) => {
+		mapData[getLocation(line)] = {
+			scaling: getScaling(line),
+			isBoss: getIsBoss(line),
+			links: []
+		};
+	});
 
-			mapData[getLocation(here)].links.push({
-				location: getLocation(there),
-				isPreexisting: line.includes('Preexisting:'),
-				itemRequirement,
-				thereGate,
-				hereGate
-			});
-		}
+	linkLines.forEach((line) => {
+		const [there, here] = removeParens(line)
+			.trim()
+			.split(/(?<!door|dropping down) to (.*)/s);
+
+		// hereGate will be undefined for preexisting routes
+		const [thereGate, hereGate] = getGates(line);
+
+		const itemRequirement = getItemRequirement(line);
+
+		console.log(`here: ${here}, there: ${there}, full: ${line}`);
+
+		mapData[getLocation(here)].links.push({
+			location: getLocation(there),
+			isPreexisting: line.includes('Preexisting:'),
+			itemRequirement,
+			thereGate,
+			hereGate
+		});
 	});
 
 	validateMapData(mapData);

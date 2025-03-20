@@ -9,7 +9,7 @@ export interface MapData {
 				name: string;
 				location: string;
 			};
-			thereGate: string;
+			thereGate?: string;
 			hereGate?: string;
 		}[];
 	};

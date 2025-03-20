@@ -62,7 +62,7 @@ export class MapState {
 				from: locationName,
 				to: link.location,
 				color: link.isPreexisting ? 'white' : 'rgb(237, 112, 45)',
-				arrows: link.isPreexisting ? undefined : 'to, from',
+				arrows: 'to',
 				title: `${link.thereGate}${link.hereGate ? ` | ${link.hereGate}` : ''}`,
 				label: link.itemRequirement ? `🔒 ${link.itemRequirement.name}` : '',
 				dashes: link.isPreexisting

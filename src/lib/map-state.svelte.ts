@@ -5,6 +5,7 @@ interface GraphNode {
 	id: string;
 	label: string;
 	color: string;
+	shape?: string;
 }
 
 interface GraphEdge {
@@ -27,36 +28,23 @@ export class MapState {
 		this.locationsByName = locationsByName;
 
 		locationNames.forEach((locationName) => {
-			this.addLocation(locationName);
+			this.visitLocation(locationName);
 		});
 	}
 
-	private getGraphDataForLocation = (locationName: string) => {
+	private getLinks = (locationName: string) => {
 		const nodes: GraphNode[] = [];
 		const edges: GraphEdge[] = [];
 
 		const locationData = this.locationsByName[locationName];
 
-		let color = 'rgb(200, 200, 255)';
-
-		if (locationName === 'Cemetery of Ash') {
-			// highlight starting location
-			color = 'rgb(200, 255, 200)';
-		} else if (locationData.links.length === 0) {
-			// highlight dead ends
-			color = 'yellow';
-		} else if (locationData.isBoss) {
-			// highlight boss locations
-			color = 'rgb(255, 200, 200)';
-		}
-
-		nodes.push({
-			id: locationName,
-			label: locationName,
-			color
-		});
-
 		locationData.links.forEach((link) => {
+			nodes.push({
+				id: link.location,
+				label: '',
+				color: 'red',
+				shape: 'circle'
+			});
 			edges.push({
 				id: `${locationName}__${link.hereGate} --> ${link.location}__${link.thereGate}`,
 				from: locationName,
@@ -72,25 +60,50 @@ export class MapState {
 		return { nodes, edges };
 	};
 
-	addLocation = (locationName: string) => {
+	private getNodeColor = (locationName: string) => {
 		const locationData = this.locationsByName[locationName];
 
-		const newGraphData = this.getGraphDataForLocation(locationName);
+		if (locationName === 'Cemetery of Ash') {
+			// highlight starting location
+			return 'rgb(200, 255, 200)';
+		} else if (locationData.isBoss) {
+			// highlight boss locations
+			return 'rgb(255, 200, 200)';
+		}
 
-		newGraphData.nodes.forEach((node) => {
+		return 'rgb(200, 200, 255)';
+	};
+
+	visitLocation = (locationName: string) => {
+		const thisNode = this.nodes.get(locationName);
+		const color = this.getNodeColor(locationName);
+
+		if (!thisNode) {
+			this.nodes.add({
+				id: locationName,
+				label: locationName,
+				color
+			});
+		} else if (thisNode.label === '') {
+			this.nodes.updateOnly({
+				id: locationName,
+				label: locationName,
+				shape: 'box',
+				color
+			});
+		}
+
+		const links = this.getLinks(locationName);
+
+		links.nodes.forEach((node) => {
 			if (!this.nodes.get(node.id)) {
 				this.nodes.add(node);
 			}
 		});
-		newGraphData.edges.forEach((edge) => {
+
+		links.edges.forEach((edge) => {
 			if (!this.edges.get(edge.id)) {
 				this.edges.add(edge);
-			}
-		});
-
-		locationData.links.forEach((link) => {
-			if (link.isPreexisting && !this.nodes.get(link.location)) {
-				this.addLocation(link.location);
 			}
 		});
 	};

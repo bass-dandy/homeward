@@ -20,10 +20,7 @@
 	<ForceGraph
 		nodes={progressMapState.nodes}
 		edges={progressMapState.edges}
-		onNodeClick={(locationName) => {
-			const { links } = locationsByName[locationName];
-			links.forEach((link) => progressMapState.addLocation(link.location));
-		}}
+		onNodeClick={(locationName) => progressMapState.visitLocation(locationName)}
 	/>
 </div>
 <div class="map" class:active={activeView === 'full'}>

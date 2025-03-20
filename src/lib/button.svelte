@@ -10,6 +10,7 @@
 
 <style>
 	.button-wrapper {
+		display: inline-block;
 		position: relative;
 		padding: 4px;
 	}

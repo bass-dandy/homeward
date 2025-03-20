@@ -99,7 +99,13 @@ export function parseLog(log: string) {
 		// toGate will be undefined for preexisting routes
 		const [fromGate, toGate] = getGates(line);
 
-		mapData[getLocation(from)].links.push({
+		const fromLocation = getLocation(from);
+
+		if (!mapData[fromLocation]) {
+			throw new Error(`Parse error: undefined source location "${fromLocation}" in line "${line}"`);
+		}
+
+		mapData[fromLocation].links.push({
 			location: getLocation(to),
 			isPreexisting: line.includes('Preexisting:'),
 			thereGate: toGate,

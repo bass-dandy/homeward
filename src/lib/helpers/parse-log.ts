@@ -56,48 +56,6 @@ export function getItemRequirement(line: string) {
 	return name && location ? { name, location } : undefined;
 }
 
-export function validateMapData(mapData: MapData) {
-	Object.values(mapData).forEach((location) => {
-		location.links.forEach((link) => {
-			if (!mapData[link.location]) {
-				console.log(`Location ${link.location} does not exist (from ${location})`);
-			}
-		});
-	});
-}
-
-export function invertLinks(mapData: MapData) {
-	const invertedMapData: MapData = {};
-
-	// ensure all locations are defined
-	Object.entries(mapData).forEach(([locationName, locationData]) => {
-		invertedMapData[locationName] = {
-			scaling: locationData.scaling,
-			isBoss: locationData.isBoss,
-			links: []
-		};
-	});
-
-	// for link in each location...
-	// 1. move the link to its linked location
-	// 2. change its location to the current location
-	// 3. swap hereGate and thereGate
-	Object.entries(mapData).forEach(([locationName, locationData]) => {
-		locationData.links.forEach((link) => {
-			invertedMapData[link.location].links.push({
-				location: locationName,
-				isPreexisting: link.isPreexisting,
-				itemRequirement: link.itemRequirement,
-				thereGate: link.hereGate,
-				hereGate: link.thereGate
-			});
-		});
-	});
-
-	validateMapData(invertedMapData);
-	return invertedMapData;
-}
-
 export function parseLog(log: string) {
 	const lines = log.split('\n').filter((line) => {
 		const ignoreList = [
@@ -110,7 +68,8 @@ export function parseLog(log: string) {
 			'Using',
 			'Writing',
 			'Processing',
-			'Copying'
+			'Copying',
+			'\r'
 		];
 
 		return line.length && !ignoreList.some((prefix) => line.startsWith(prefix));
@@ -118,10 +77,10 @@ export function parseLog(log: string) {
 
 	const mapData: MapData = {};
 
-	// lines that denote new locations
+	// lines that denote new locations are not indented
 	const locationLines = lines.filter((line) => !line.startsWith('  '));
 
-	// lines that denote links between locations
+	// lines that denote links between locations are indented
 	const linkLines = lines.filter((line) => line.startsWith('  '));
 
 	locationLines.forEach((line) => {
@@ -133,26 +92,21 @@ export function parseLog(log: string) {
 	});
 
 	linkLines.forEach((line) => {
-		const [there, here] = removeParens(line)
+		const [from, to] = removeParens(line)
 			.trim()
 			.split(/(?<!door|dropping down) to (.*)/s);
 
-		// hereGate will be undefined for preexisting routes
-		const [thereGate, hereGate] = getGates(line);
+		// toGate will be undefined for preexisting routes
+		const [fromGate, toGate] = getGates(line);
 
-		const itemRequirement = getItemRequirement(line);
-
-		console.log(`here: ${here}, there: ${there}, full: ${line}`);
-
-		mapData[getLocation(here)].links.push({
-			location: getLocation(there),
+		mapData[getLocation(from)].links.push({
+			location: getLocation(to),
 			isPreexisting: line.includes('Preexisting:'),
-			itemRequirement,
-			thereGate,
-			hereGate
+			thereGate: toGate,
+			hereGate: fromGate,
+			itemRequirement: getItemRequirement(line)
 		});
 	});
 
-	validateMapData(mapData);
-	return invertLinks(mapData);
+	return mapData;
 }

@@ -66,6 +66,7 @@
 	.section {
 		display: flex;
 		align-items: center;
+		gap: 16px;
 	}
 
 	img {
@@ -75,7 +76,7 @@
 
 	h1 {
 		padding: 0;
-		margin: 0 0 0 16px;
+		margin: 0;
 		font-size: 1.5rem;
 		color: var(--color-text-secondary);
 	}

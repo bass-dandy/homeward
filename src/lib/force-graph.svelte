@@ -4,19 +4,21 @@
 	import { Network } from 'vis-network';
 
 	let {
-		nodes = $bindable(),
-		edges = $bindable(),
+		nodes,
+		edges,
 		onNodeClick,
+		network = $bindable(),
 	}: {
 		nodes: DataSet;
 		edges: DataSet;
 		onNodeClick: (locationName: string) => void;
+		network: Network;
 	} = $props();
 
 	let mountPoint: HTMLDivElement;
 
 	onMount(() => {
-		const network = new Network(mountPoint, { nodes, edges }, {
+		network = new Network(mountPoint, { nodes, edges }, {
 			nodes: { shape: 'box' },
 			interaction: {
 				hover: true,

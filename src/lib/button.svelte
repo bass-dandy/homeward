@@ -1,9 +1,9 @@
 <script lang="ts">
-	export let onclick: () => void;
+	let buttonProps = $props();
 </script>
 
 <div class="button-wrapper">
-	<button {onclick}>
+	<button {...buttonProps}>
 		<slot />
 	</button>
 </div>

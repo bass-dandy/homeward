@@ -6,6 +6,7 @@
 	import ForceGraph from './force-graph.svelte';
 	import MapControls from './map-controls.svelte';
 	import { MapState } from './map-state.svelte.ts';
+	import Search from './search.svelte';
 	import type { MapData } from './types';
 
 	let { locationsByName }: { locationsByName: MapData } = $props();
@@ -14,6 +15,9 @@
 
 	const progressMapState = new MapState(locationsByName, ['Cemetery of Ash']);
 	const fullMapState = new MapState(locationsByName, Object.keys(locationsByName));
+
+	let progressMapNetwork;
+	let fullMapNetwork;
 </script>
 
 <div class="map" class:active={activeView === 'progress'}>
@@ -21,12 +25,14 @@
 		nodes={progressMapState.nodes}
 		edges={progressMapState.edges}
 		onNodeClick={(locationName) => progressMapState.visitLocation(locationName)}
+		bind:network={progressMapNetwork}
 	/>
 </div>
 <div class="map" class:active={activeView === 'full'}>
 	<ForceGraph
 		nodes={fullMapState.nodes}
 		edges={fullMapState.edges}
+		bind:network={fullMapNetwork}
 	/>
 </div>
 
@@ -38,6 +44,14 @@
 	>
 		{activeView === 'progress' ? 'Show full map' : 'Show progress'}
 	</Button>
+	<Search
+		{locationsByName}
+		onLocationClick={(locationName) => {
+			activeView === 'progress'
+				? progressMapNetwork.focus(locationName)
+				: fullMapNetwork.focus(locationName);
+		}}
+	/>
 </MapControls>
 
 <style>

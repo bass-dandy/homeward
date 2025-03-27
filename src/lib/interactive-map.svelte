@@ -44,14 +44,16 @@
 	>
 		{activeView === 'progress' ? 'Show full map' : 'Show progress'}
 	</Button>
-	<Search
-		{locationsByName}
-		onLocationClick={(locationName) => {
-			activeView === 'progress'
-				? progressMapNetwork.focus(locationName)
-				: fullMapNetwork.focus(locationName);
-		}}
-	/>
+	{#key activeView}
+		<Search
+			mapState={activeView === 'progress' ? progressMapState : undefined}
+			onLocationClick={(locationName) => {
+				activeView === 'progress'
+					? progressMapNetwork.focus(locationName)
+					: fullMapNetwork.focus(locationName);
+			}}
+		/>
+	{/key}
 </MapControls>
 
 <style>

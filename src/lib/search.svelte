@@ -1,17 +1,46 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { groupedLocations } from './helpers/consts';
 	import Button from './button.svelte';
 	import type { MapData } from './types';
+	import type { MapState } from './map-state.svelte.ts';
 
 	let {
-		locationsByName,
+		mapState = undefined,
 		onLocationClick,
 	}: {
-		locationsByName: MapData,
-		onLocationClick: (locationName: string) => void,
+		mapState?: MapState;
+		onLocationClick: (locationName: string) => void;
 	} = $props();
 
 	let popover: HTMLDivElement;
+
+	// groupedLocationsVisited should be calculated via $derived, but mapState.nodes is mutable and thus not reactive
+	let groupedLocationsVisited = $state(groupedLocations);
+
+	const updateLocationList = () => {
+		const groupedLocationsFiltered = {};
+
+		for (const [worldName, locationNames] of Object.entries(groupedLocations)) {
+			const filteredLocationNames = locationNames.filter((locationName) =>
+				mapState.nodes.get(locationName)?.label
+			);
+
+			if (filteredLocationNames.length > 0) {
+				groupedLocationsFiltered[worldName] = filteredLocationNames;
+			}
+		}
+
+		groupedLocationsVisited = groupedLocationsFiltered;
+	};
+
+	onMount(() => {
+		if (!mapState) return;
+
+		mapState?.nodes.on('add', updateLocationList);
+		updateLocationList();
+		return () => mapState?.nodes.off('add', updateLocationList);
+	});
 </script>
 
 <Button id="toggle" popovertarget="location-list-popover">
@@ -24,7 +53,7 @@
 	bind:this={popover}
 >
 	<dl>
-		{#each Object.entries(groupedLocations) as [worldName, locationNames] (worldName)}
+		{#each Object.entries(groupedLocationsVisited) as [worldName, locationNames] (worldName)}
 			<dt>
 				<img
 					src={`/images/${worldName.toLowerCase().replace(/ /g, '-')}.webp`}

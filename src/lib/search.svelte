@@ -14,6 +14,7 @@
 	} = $props();
 
 	let popover: HTMLDivElement;
+	let searchValue = $state('');
 
 	// groupedLocationsVisited should be calculated via $derived, but mapState.nodes is mutable and thus not reactive
 	let groupedLocationsVisited = $state(groupedLocations);
@@ -25,21 +26,50 @@
 			const filteredLocationNames = locationNames.filter((locationName) =>
 				mapState.nodes.get(locationName)?.label
 			);
-
 			if (filteredLocationNames.length > 0) {
 				groupedLocationsFiltered[worldName] = filteredLocationNames;
 			}
 		}
-
 		groupedLocationsVisited = groupedLocationsFiltered;
 	};
 
+	// make mapState reactive
 	onMount(() => {
 		if (!mapState) return;
 
 		mapState?.nodes.on('add', updateLocationList);
 		updateLocationList();
 		return () => mapState?.nodes.off('add', updateLocationList);
+	});
+
+	// attach popover events
+	onMount(() => {
+		const clearSearch = () => {
+			searchValue = '';
+		};
+		popover.addEventListener('beforetoggle', clearSearch);
+
+		return () => popover.removeEventListener('beforetoggle', clearSearch);
+	});
+
+	let groupedLocationsVisitedFiltered = $derived.by(() => {
+		if (!searchValue) return groupedLocationsVisited;
+
+		return Object
+			.entries(groupedLocationsVisited)
+			.reduce((acc, [worldName, locationNames]) => {
+				if (worldName.toLowerCase().includes(searchValue.toLowerCase())) {
+					acc[worldName] = locationNames;
+					return acc;
+				}
+				const filteredLocationNames = locationNames.filter((locationName) =>
+					locationName.toLowerCase().includes(searchValue.toLowerCase())
+				);
+				if (filteredLocationNames.length > 0) {
+					acc[worldName] = filteredLocationNames;
+				}
+				return acc;
+			}, {} as Record<string, string[]>);
 	});
 </script>
 
@@ -52,32 +82,39 @@
 	id="location-list-popover"
 	bind:this={popover}
 >
-	<dl>
-		{#each Object.entries(groupedLocationsVisited) as [worldName, locationNames] (worldName)}
-			<dt>
-				<img
-					src={`/images/${worldName.toLowerCase().replace(/ /g, '-')}.webp`}
-					alt=""
-					width="80"
-					height="96"
-				/>
-				{worldName}
-			</dt>
-			{#each locationNames as locationName}
-				<dd>
-					<button
-						class="location-button"
-						onclick={() => {
-							onLocationClick(locationName);
-							popover.hidePopover();
-						}}
-					>
-						{locationName}
-					</button>
-				</dd>
+	<div class="border">
+		<input
+			type="text"
+			placeholder="Search..."
+			bind:value={searchValue}
+		/>
+		<dl>
+			{#each Object.entries(groupedLocationsVisitedFiltered) as [worldName, locationNames] (worldName)}
+				<dt>
+					<img
+						src={`/images/${worldName.toLowerCase().replace(/ /g, '-')}.webp`}
+						alt=""
+						width="80"
+						height="96"
+					/>
+					{worldName}
+				</dt>
+				{#each locationNames as locationName}
+					<dd>
+						<button
+							class="location-button"
+							onclick={() => {
+								onLocationClick(locationName);
+								popover.hidePopover();
+							}}
+						>
+							{locationName}
+						</button>
+					</dd>
+				{/each}
 			{/each}
-		{/each}
-	</dl>
+		</dl>
+	</div>
 </div>
 
 <style>
@@ -107,6 +144,19 @@
 			repeat;             /* repeat */
 	}
 
+	.border {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+		flex: 1;
+		overflow: hidden;
+		border-image-source: url('/images/ui/gold-border.png');
+		border-image-slice: 33%;
+		border-image-width: 48px;
+		border-image-outset: 48px;
+		border-image-repeat: round;
+	}
+
 	dl {
 		display: flex;
 		flex-direction: column;
@@ -116,11 +166,6 @@
 		padding: 0;
 		margin: 0;
 		overflow: auto;
-		border-image-source: url('/images/ui/gold-border.png');
-		border-image-slice: 33%;
-		border-image-width: 48px;
-		border-image-outset: 48px;
-		border-image-repeat: round;
 	}
 
 	dt {

@@ -157,6 +157,20 @@
 		border-image-repeat: round;
 	}
 
+	input[type="text"] {
+		padding: 8px;
+		border-radius: 0;
+		border: 1px solid var(--color-ui);
+		background-color: var(--color-black);
+		font-family: Matisse, serif;
+		color: var(--color-text-primary);
+	}
+
+	input[type="text"]:focus {
+		border-color: var(--color-ui-highlight);
+		outline: none;
+	}
+
 	dl {
 		display: flex;
 		flex-direction: column;

@@ -9,6 +9,7 @@ const config = {
 
 	kit: {
 		adapter: adapter(),
+		paths: { relative: false },
 	},
 	paths: {
 		base: process.argv.includes('dev') ? '' : process.env.BASE_PATH

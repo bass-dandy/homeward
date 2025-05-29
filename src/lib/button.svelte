@@ -25,7 +25,7 @@
 
 	.button-wrapper::before {
 		border: 2px solid var(--color-ui);
-		mask-image: url('/images/ui/noise.jpg');
+		mask-image: url('../images/ui/noise.jpg');
 		mask-mode: luminance;
 		mask-size: cover;
 	}

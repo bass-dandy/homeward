@@ -1,4 +1,13 @@
 <script lang="ts">
+	import topLeft from '../images/ui/border-top-left.png';
+	import topDeco from '../images/ui/border-top-deco.png';
+	import topCenter from '../images/ui/border-top-center.png';
+	import topRight from '../images/ui/border-top-right.png';
+	import bottomLeft from '../images/ui/border-bottom-left.png';
+	import bottomDeco from '../images/ui/border-bottom-deco.png';
+	import bottomCenter from '../images/ui/border-bottom-center.png';
+	import bottomRight from '../images/ui/border-bottom-right.png';
+
 	let {
 		position = 'center',
 		children,
@@ -10,29 +19,29 @@
 
 <div class={`dialog ${position}`}>
 	<div class="border-top">
-		<img src="/images/ui/border-top-left.png" width="50" height="9" alt="">
+		<img src={topLeft} width="50" height="9" alt="">
 		<div class="border-stretch"></div>
-		<img src="/images/ui/border-top-deco.png" width="50" height="9" alt="">
+		<img src={topDeco} width="50" height="9" alt="">
 		<div class="border-stretch"></div>
-		<img src="/images/ui/border-top-center.png" width="100" height="9" alt="">
+		<img src={topCenter} width="100" height="9" alt="">
 		<div class="border-stretch"></div>
-		<img src="/images/ui/border-top-deco.png" width="50" height="9" alt="">
+		<img src={topDeco} width="50" height="9" alt="">
 		<div class="border-stretch"></div>
-		<img src="/images/ui/border-top-right.png" width="50" height="9" alt="">
+		<img src={topRight} width="50" height="9" alt="">
 	</div>
 	<div class="content">
 		{@render children?.()}
 	</div>
 	<div class="border-bottom">
-		<img src="/images/ui/border-bottom-left.png" width="50" height="9" alt="">
+		<img src={bottomLeft} width="50" height="9" alt="">
 		<div class="border-stretch"></div>
-		<img src="/images/ui/border-bottom-deco.png" width="50" height="9" alt="">
+		<img src={bottomDeco} width="50" height="9" alt="">
 		<div class="border-stretch"></div>
-		<img src="/images/ui/border-bottom-center.png" width="100" height="9" alt="">
+		<img src={bottomCenter} width="100" height="9" alt="">
 		<div class="border-stretch"></div>
-		<img src="/images/ui/border-bottom-deco.png" width="50" height="9" alt="">
+		<img src={bottomDeco} width="50" height="9" alt="">
 		<div class="border-stretch"></div>
-		<img src="/images/ui/border-bottom-right.png" width="50" height="9" alt="">
+		<img src={bottomRight} width="50" height="9" alt="">
 	</div>
 </div>
 
@@ -60,7 +69,7 @@
 		mask-image: linear-gradient(to right, transparent, black 32px, black calc(100% - 32px), transparent);
 		background:
 			linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)),
-			url('/images/ui/splotch-tile.png'),
+			url('../images/ui/splotch-tile.png'),
 			linear-gradient(black, black);
 	}
 
@@ -87,11 +96,11 @@
 	}
 
 	.border-top .border-stretch {
-		background-image: url('/images/ui/border-top-stretch.png');
+		background-image: url('../images/ui/border-top-stretch.png');
 	}
 
 	.border-bottom .border-stretch {
-		background-image: url('/images/ui/border-bottom-stretch.png');
+		background-image: url('../images/ui/border-bottom-stretch.png');
 	}
 
 	.border-top img, .border-bottom img {

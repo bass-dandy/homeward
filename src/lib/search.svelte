@@ -136,8 +136,8 @@
 		box-sizing: border-box;
 		background:
 			linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)),
-			url('/images/ui/splotch-tile.png');
-		-webkit-mask-box-image: url('/images/ui/torn-border-mask-alpha.png')
+			url('../images/ui/splotch-tile.png');
+		-webkit-mask-box-image: url('../images/ui/torn-border-mask-alpha.png')
 			33% fill /          /* slice */
 			80px /              /* width */
 			0px                 /* outset */
@@ -150,7 +150,7 @@
 		gap: 16px;
 		flex: 1;
 		overflow: hidden;
-		border-image-source: url('/images/ui/gold-border.png');
+		border-image-source: url('../images/ui/gold-border.png');
 		border-image-slice: 33%;
 		border-image-width: 48px;
 		border-image-outset: 48px;

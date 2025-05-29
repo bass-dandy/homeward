@@ -1,4 +1,5 @@
 <script lang="ts">
+	import menuLogo from '../images/menu.png';
 	import { MapState } from './map-state.svelte.ts';
 
 	let { activeMapState }: { activeMapState: MapState } = $props();
@@ -8,7 +9,7 @@
 	<div class="stripe"></div>
 	<div class="header-content">
 		<div class="section">
-			<img src="/images/menu.png" alt="" height="90" width ="90" />
+			<img src={menuLogo} alt="" height="90" width ="90" />
 			<h1>Homeward</h1>
 		</div>
 		<div class="section">
@@ -30,10 +31,10 @@
 		mask-size: auto, auto 5px;
 		mask-image:
 			linear-gradient(to bottom, black 0%, black calc(100% - 5px), transparent, transparent 100%),
-			url('/images/ui/torn-edge-mask-alpha.png');
+			url('../images/ui/torn-edge-mask-alpha.png');
 		background:
 			linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.9)),
-			url('/images/ui/splotch-tile.png'),
+			url('../images/ui/splotch-tile.png'),
 			linear-gradient(black, black);
 	}
 
@@ -42,7 +43,7 @@
 		height: 20px;
 		width: 100%;
 		border-bottom: 2px dotted var(--color-ui);
-		mask-image: url('/images/ui/noise.jpg');
+		mask-image: url('../images/ui/noise.jpg');
 		mask-mode: luminance;
 		mask-size: 10%;
 	}

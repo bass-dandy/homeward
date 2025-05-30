@@ -15,7 +15,7 @@ export default {
 		}),
 		paths: {
 			relative: true,
-			base: process.argv.includes('dev') ? '/homeward' : '/homeward' //process.env.BASE_PATH
+			base: process.argv.includes('dev') ? '' : process.env.BASE_PATH
 		},
 	}
 };
